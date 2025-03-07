@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝婉元人生养成系统</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #4a86e8;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .icon-card {
+            background-color: white;
+            width: 250px;
+            height: 300px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .icon {
+            width: 120px;
+            height: 120px;
+            margin: 30px 0;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .goal-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234a86e8' d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8.29 13.29c-.39.39-1.02.39-1.41 0L5.71 12.7c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0L10 14.17l6.88-6.88c.39-.39 1.02-.39 1.41 0 .39.39.39 1.02 0 1.41l-7.58 7.59z'/%3E%3C/svg%3E");
+        }
+        .habit-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234a86e8' d='M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z'/%3E%3C/svg%3E");
+        }
+        .schedule-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234a86e8' d='M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z'/%3E%3C/svg%3E");
+        }
+        .icon-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .icon-desc {
+            font-size: 14px;
+            text-align: center;
+            padding: 0 20px;
+            color: #666;
+        }
+        
+        /* Goal Setting Page Styles */
+        #goalPage {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+        }
+        button {
+            background-color: #4a86e8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3a76d8;
+        }
+        .progress-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+        }
+        .goal-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .progress-bar-container {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+        .settings {
+            margin-top: 15px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        /* Habit Tracking Page Styles */
+        #habitPage {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4a86e8;
+            color: white;
+        }
+        .check-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .checked {
+            background-color: #4caf50;
+            color: white;
+        }
+        .back-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>蓝婉元人生养成系统</h1>
+    </header>
+    
+    <div class="container" id="mainPage">
+        <a href="#" class="icon-card" onclick="showGoalPage(); return false;">
+            <div class="icon goal-icon"></div>
+            <div class="icon-title">设置目标</div>
+            <div class="icon-desc">制定并追踪你的个人目标，记录学习养成进度</div>
+        </a>
+        
+        <a href="#" class="icon-card" onclick="showHabitPage(); return false;">
+            <div class="icon habit-icon"></div>
+            <div class="icon-title">习惯打卡</div>
+            <div class="icon-desc">建立并跟踪你的日常习惯，培养良好的生活方式</div>
+        </a>
+        
+        <a href="#" class="icon-card">
+            <div class="icon schedule-icon"></div>
+            <div class="icon-title">日程安排</div>
+            <div class="icon-desc">计划和管理你的日常活动，让时间更有效率</div>
+        </a>
+    </div>
+    
+    <!-- Goal Setting Page -->
+    <div id="goalPage">
+        <button class="back-button" onclick="showMainPage()">返回主页</button>
+        <h2>设置目标</h2>
+        
+        <div class="input-group">
+            <label for="goalCount">请输入需要设定的任务数量：</label>
+            <input type="number" id="goalCount" min="1" max="10" value="1">
+        </div>
+        
+        <div class="input-group">
+            <label for="goalNames">请输入任务名称（用逗号分隔）：</label>
+            <input type="text" id="goalNames" placeholder="例如：英语学习,健身锻炼,编程学习">
+        </div>
+        
+        <button onclick="createGoals()">创建目标</button>
+        
+        <div id="goalsContainer"></div>
+    </div>
+    
+    <!-- Habit Tracking Page -->
+    <div id="habitPage">
+        <button class="back-button" onclick="showMainPage()">返回主页</button>
+        <h2>习惯打卡</h2>
+        
+        <div class="input-group">
+            <label for="habitCount">请输入需要设定的习惯数量：</label>
+            <input type="number" id="habitCount" min="1" max="10" value="1">
+        </div>
+        
+        <div class="input-group">
+            <label for="habitNames">请输入习惯名称（用逗号分隔）：</label>
+            <input type="text" id="habitNames" placeholder="例如：晨跑,阅读,冥想">
+        </div>
+        
+        <div class="input-group">
+            <label for="startDate">开始日期：</label>
+            <input type="date" id="startDate">
+        </div>
+        
+        <div class="input-group">
+            <label for="daysCount">显示天数：</label>
+            <input type="number" id="daysCount" min="1" max="31" value="7">
+        </div>
+        
+        <button onclick="createHabitTable()">创建习惯表</button>
+        
+        <div id="habitTableContainer"></div>
+    </div>
+    
+    <!-- Modal for congratulation messages -->
+    <div class="modal" id="congratsModal">
+        <div class="modal-content">
+            <h3 id="modalMessage">恭喜！经验值+1</h3>
+            <button onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+    
+    <script>
+        // Show/Hide Pages
+        function showMainPage() {
+            document.getElementById('mainPage').style.display = 'flex';
+            document.getElementById('goalPage').style.display = 'none';
+            document.getElementById('habitPage').style.display = 'none';
+        }
+        
+        function showGoalPage() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('goalPage').style.display = 'block';
+        }
+        
+        function showHabitPage() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('habitPage').style.display = 'block';
+        }
+        
+        // Goal Page Functions
+        function createGoals() {
+            const count = parseInt(document.getElementById('goalCount').value);
+            const namesInput = document.getElementById('goalNames').value;
+            const names = namesInput.split(',').map(name => name.trim());
+            
+            // Validate input
+            if (names.length < count) {
+                alert('请输入足够的任务名称！');
+                return;
+            }
+            
+            const container = document.getElementById('goalsContainer');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                if (names[i]) {
+                    createGoalElement(names[i], container, i);
+                }
+            }
+        }
+        
+        function createGoalElement(name, container, index) {
+            const goalDiv = document.createElement('div');
+            goalDiv.className = 'progress-container';
+            goalDiv.id = `goal-${index}`;
+            
+            const currentValue = 0;
+            const maxValue = 100;  // Default max value
+            
+            goalDiv.innerHTML = `
+                <div class="goal-title">${name}</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-${index}" style="width: ${(currentValue / maxValue) * 100}%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>当前进度: <span id="current-value-${index}">${currentValue}</span>/<span id="max-value-${index}">${maxValue}</span></span>
+                    <button onclick="incrementProgress(${index}, '${name}')">别管了，学习养成1h</button>
+                </div>
+                <div class="settings">
+                    <div class="input-group">
+                        <label for="max-${index}">目标完成所需经验值:</label>
+                        <input type="number" id="max-${index}" value="${maxValue}" min="1" onchange="updateMaxValue(${index})">
+                    </div>
+                    <div class="input-group">
+                        <label for="end-date-${index}">目标截止日期:</label>
+                        <input type="date" id="end-date-${index}" onchange="updateEndDate(${index})">
+                    </div>
+                    <div class="input-group">
+                        <input type="checkbox" id="exam-check-${index}" onchange="toggleExamDate(${index})">
+                        <label for="exam-check-${index}">设置最终考核时间</label>
+                        <input type="date" id="exam-date-${index}" style="display: none;" onchange="updateExamDate(${index})">
+                    </div>
+                    <div id="date-info-${index}" class="date-info"></div>
+                </div>
+            `;
+            
+            container.appendChild(goalDiv);
+        }
+        
+        function incrementProgress(index, name) {
+            const currentValueElement = document.getElementById(`current-value-${index}`);
+            const maxValueElement = document.getElementById(`max-value-${index}`);
+            const progressBar = document.getElementById(`progress-${index}`);
+            
+            const currentValue = parseInt(currentValueElement.textContent) + 1;
+            const maxValue = parseInt(maxValueElement.textContent);
+            
+            currentValueElement.textContent = currentValue;
+            progressBar.style.width = `${(currentValue / maxValue) * 100}%`;
+            
+            // Show congratulation modal
+            const modal = document.getElementById('congratsModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.textContent = `恭喜！"${name}" 经验值+1`;
+            modal.style.display = 'flex';
+        }
+        
+        function updateMaxValue(index) {
+            const maxInput = document.getElementById(`max-${index}`);
+            const maxValueElement = document.getElementById(`max-value-${index}`);
+            const currentValueElement = document.getElementById(`current-value-${index}`);
+            const progressBar = document.getElementById(`progress-${index}`);
+            
+            const maxValue = parseInt(maxInput.value);
+            const currentValue = parseInt(currentValueElement.textContent);
+            
+            maxValueElement.textContent = maxValue;
+            progressBar.style.width = `${(currentValue / maxValue) * 100}%`;
+        }
+        
+        function updateEndDate(index) {
+            const endDateInput = document.getElementById(`end-date-${index}`);
+            const dateInfoDiv = document.getElementById(`date-info-${index}`);
+            
+            if (endDateInput.value) {
+                const endDate = new Date(endDateInput.value);
+                const formattedDate = endDate.toLocaleDateString();
+                
+                // Update date info
+                updateDateInfo(index);
+            }
+        }
+        
+        function toggleExamDate(index) {
+            const examCheck = document.getElementById(`exam-check-${index}`);
+            const examDateInput = document.getElementById(`exam-date-${index}`);
+            
+            if (examCheck.checked) {
+                examDateInput.style.display = 'block';
+            } else {
+                examDateInput.style.display = 'none';
+                examDateInput.value = '';
+                updateDateInfo(index);
+            }
+        }
+        
+        function updateExamDate(index) {
+            updateDateInfo(index);
+        }
+        
+        function updateDateInfo(index) {
+            const endDateInput = document.getElementById(`end-date-${index}`);
+            const examDateInput = document.getElementById(`exam-date-${index}`);
+            const dateInfoDiv = document.getElementById(`date-info-${index}`);
+            
+            let dateInfo = '';
+            
+            if (endDateInput.value) {
+                const endDate = new Date(endDateInput.value);
+                dateInfo += `目标截止日期: ${endDate.toLocaleDateString()}`;
+            }
+            
+            if (examDateInput.value && document.getElementById(`exam-check-${index}`).checked) {
+                const examDate = new Date(examDateInput.value);
+                if (dateInfo) dateInfo += '<br>';
+                dateInfo += `最终考核时间: ${examDate.toLocaleDateString()}`;
+            }
+            
+            dateInfoDiv.innerHTML = dateInfo;
+        }
+        
+        // Habit Page Functions
+        function createHabitTable() {
+            const count = parseInt(document.getElementById('habitCount').value);
+            const namesInput = document.getElementById('habitNames').value;
+            const names = namesInput.split(',').map(name => name.trim());
+            const startDateInput = document.getElementById('startDate').value;
+            const daysCount = parseInt(document.getElementById('daysCount').value);
+            
+            // Validate input
+            if (names.length < count) {
+                alert('请输入足够的习惯名称！');
+                return;
+            }
+            
+            if (!startDateInput) {
+                alert('请选择开始日期！');
+                return;
+            }
+            
+            const container = document.getElementById('habitTableContainer');
+            container.innerHTML = '';
+            
+            // Create table
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+            
+            // Create header row
+            const headerRow = document.createElement('tr');
+            const habitHeaderCell = document.createElement('th');
+            habitHeaderCell.textContent = '习惯/日期';
+            headerRow.appendChild(habitHeaderCell);
+            
+            // Generate date headers
+            const startDate = new Date(startDateInput);
+            const dates = [];
+            
+            for (let i = 0; i < daysCount; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                dates.push(date);
+                
+                const dateCell = document.createElement('th');
+                dateCell.textContent = date.toLocaleDateString().slice(5); // Format: MM/DD
+                headerRow.appendChild(dateCell);
+            }
+            
+            thead.appendChild(headerRow);
+            
+            // Create habit rows
+            for (let i = 0; i < count; i++) {
+                if (names[i]) {
+                    const habitRow = document.createElement('tr');
+                    const habitNameCell = document.createElement('td');
+                    habitNameCell.textContent = names[i];
+                    habitRow.appendChild(habitNameCell);
+                    
+                    // Create check buttons for each date
+                    for (let j = 0; j < daysCount; j++) {
+                        const checkCell = document.createElement('td');
+                        const checkBtn = document.createElement('div');
+                        checkBtn.className = 'check-btn';
+                        checkBtn.innerHTML = '✓';
+                        checkBtn.onclick = function() {
+                            toggleHabitCheck(checkBtn, names[i]);
+                        };
+                        checkCell.appendChild(checkBtn);
+                        habitRow.appendChild(checkCell);
+                    }
+                    
+                    tbody.appendChild(habitRow);
+                }
+            }
+            
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+        
+        function toggleHabitCheck(button, habitName) {
+            if (button.classList.contains('checked')) {
+                button.classList.remove('checked');
+            } else {
+                button.classList.add('checked');
+                
+                // Show congratulation modal
+                const modal = document.getElementById('congratsModal');
+                const modalMessage = document.getElementById('modalMessage');
+                modalMessage.textContent = `"${habitName}" 坚持天数+1`;
+                modal.style.display = 'flex';
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('congratsModal').style.display = 'none';
+        }
+        
+        // Set today's date as default for inputs
+        window.onload = function() {
+            const today = new Date();
+            const dateString = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            
+            document.getElementById('startDate').value = dateString;
+        };
+    </script>
+</body>
+</html>
